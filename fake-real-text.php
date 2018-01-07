@@ -9,14 +9,14 @@
  * that starts the plugin.
  *
  * @link              https://developpeur-web-toulouse.fr/
- * @since             1.0.0
+ * @since             0.2.0
  * @package           Fake_Real_Text
  *
  * @wordpress-plugin
  * Plugin Name:       Fake Real Text
- * Plugin URI:        https://developpeur-web-toulouse.fr/plugins-wordpress/fake-real-text/
+ * Plugin URI:        https://developpeur-web-toulouse.fr/wordpress-fake-real-text-plugin/
  * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
- * Version:           1.0.0
+ * Version:           0.2.0
  * Author:            Benoît Hubert
  * Author URI:        https://developpeur-web-toulouse.fr/
  * License:           GPL-2.0+
@@ -32,10 +32,10 @@ if ( ! defined( 'WPINC' ) ) {
 
 /**
  * Currently plugin version.
- * Start at version 1.0.0 and use SemVer - https://semver.org
+ * Start at version 0.2.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'PLUGIN_NAME_VERSION', '1.0.0' );
+define( 'PLUGIN_NAME_VERSION', '0.2.0' );
 
 /**
  * Require Composer autoloader
@@ -76,7 +76,7 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-fake-real-text.php';
  * then kicking off the plugin from this point in the file does
  * not affect the page life cycle.
  *
- * @since    1.0.0
+ * @since    0.2.0
  */
 function run_fake_real_text() {
 

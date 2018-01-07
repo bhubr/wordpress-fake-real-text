@@ -7,7 +7,7 @@
  * public-facing side of the site and the admin area.
  *
  * @link       https://developpeur-web-toulouse.fr/
- * @since      1.0.0
+ * @since      0.2.0
  *
  * @package    Fake_Real_Text
  * @subpackage Fake_Real_Text/includes
@@ -22,7 +22,7 @@
  * Also maintains the unique identifier of this plugin as well as the current
  * version of the plugin.
  *
- * @since      1.0.0
+ * @since      0.2.0
  * @package    Fake_Real_Text
  * @subpackage Fake_Real_Text/includes
  * @author     Benoît Hubert <benoithubert@gmail.com>
@@ -33,7 +33,7 @@ class Fake_Real_Text {
 	 * The loader that's responsible for maintaining and registering all hooks that power
 	 * the plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    0.2.0
 	 * @access   protected
 	 * @var      Fake_Real_Text_Loader    $loader    Maintains and registers all hooks for the plugin.
 	 */
@@ -42,7 +42,7 @@ class Fake_Real_Text {
 	/**
 	 * The unique identifier of this plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    0.2.0
 	 * @access   protected
 	 * @var      string    $plugin_name    The string used to uniquely identify this plugin.
 	 */
@@ -51,7 +51,7 @@ class Fake_Real_Text {
 	/**
 	 * The current version of the plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    0.2.0
 	 * @access   protected
 	 * @var      string    $version    The current version of the plugin.
 	 */
@@ -64,13 +64,13 @@ class Fake_Real_Text {
 	 * Load the dependencies, define the locale, and set the hooks for the admin area and
 	 * the public-facing side of the site.
 	 *
-	 * @since    1.0.0
+	 * @since    0.2.0
 	 */
 	public function __construct() {
 		if ( defined( 'PLUGIN_NAME_VERSION' ) ) {
 			$this->version = PLUGIN_NAME_VERSION;
 		} else {
-			$this->version = '1.0.0';
+			$this->version = '0.2.0';
 		}
 		$this->plugin_name = 'fake-real-text';
 
@@ -93,7 +93,7 @@ class Fake_Real_Text {
 	 * Create an instance of the loader which will be used to register the hooks
 	 * with WordPress.
 	 *
-	 * @since    1.0.0
+	 * @since    0.2.0
 	 * @access   private
 	 */
 	private function load_dependencies() {
@@ -131,7 +131,7 @@ class Fake_Real_Text {
 	 * Uses the Fake_Real_Text_i18n class in order to set the domain and to register the hook
 	 * with WordPress.
 	 *
-	 * @since    1.0.0
+	 * @since    0.2.0
 	 * @access   private
 	 */
 	private function set_locale() {
@@ -146,7 +146,7 @@ class Fake_Real_Text {
 	 * Register all of the hooks related to the admin area functionality
 	 * of the plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    0.2.0
 	 * @access   private
 	 */
 	private function define_admin_hooks() {
@@ -164,7 +164,7 @@ class Fake_Real_Text {
 	 * Register all of the hooks related to the public-facing functionality
 	 * of the plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    0.2.0
 	 * @access   private
 	 */
 	private function define_public_hooks() {
@@ -179,7 +179,7 @@ class Fake_Real_Text {
 	/**
 	 * Run the loader to execute all of the hooks with WordPress.
 	 *
-	 * @since    1.0.0
+	 * @since    0.2.0
 	 */
 	public function run() {
 		$this->loader->run();
@@ -189,7 +189,7 @@ class Fake_Real_Text {
 	 * The name of the plugin used to uniquely identify it within the context of
 	 * WordPress and to define internationalization functionality.
 	 *
-	 * @since     1.0.0
+	 * @since     0.2.0
 	 * @return    string    The name of the plugin.
 	 */
 	public function get_plugin_name() {
@@ -199,7 +199,7 @@ class Fake_Real_Text {
 	/**
 	 * The reference to the class that orchestrates the hooks with the plugin.
 	 *
-	 * @since     1.0.0
+	 * @since     0.2.0
 	 * @return    Fake_Real_Text_Loader    Orchestrates the hooks of the plugin.
 	 */
 	public function get_loader() {
@@ -209,7 +209,7 @@ class Fake_Real_Text {
 	/**
 	 * Retrieve the version number of the plugin.
 	 *
-	 * @since     1.0.0
+	 * @since     0.2.0
 	 * @return    string    The version number of the plugin.
 	 */
 	public function get_version() {

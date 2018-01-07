@@ -4,7 +4,7 @@
  * The admin-specific functionality of the plugin.
  *
  * @link       https://developpeur-web-toulouse.fr/
- * @since      1.0.0
+ * @since      0.2.0
  *
  * @package    Fake_Real_Text
  * @subpackage Fake_Real_Text/admin
@@ -25,7 +25,7 @@ class Fake_Real_Text_Admin {
 	/**
 	 * The ID of this plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    0.2.0
 	 * @access   private
 	 * @var      string    $plugin_name    The ID of this plugin.
 	 */
@@ -34,7 +34,7 @@ class Fake_Real_Text_Admin {
 	/**
 	 * The version of this plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    0.2.0
 	 * @access   private
 	 * @var      string    $version    The current version of this plugin.
 	 */
@@ -43,7 +43,7 @@ class Fake_Real_Text_Admin {
 	/**
 	 * Initialize the class and set its properties.
 	 *
-	 * @since    1.0.0
+	 * @since    0.2.0
 	 * @param      string    $plugin_name       The name of this plugin.
 	 * @param      string    $version    The version of this plugin.
 	 */
@@ -57,7 +57,7 @@ class Fake_Real_Text_Admin {
 		/**
 		 * Add an options page under the Settings submenu
 		 *
-		 * @since  1.0.0
+		 * @since  0.2.0
 		 */
 		public function add_tools_page() {
 
@@ -74,7 +74,7 @@ class Fake_Real_Text_Admin {
 	/**
 	 * Render the options page for plugin
 	 *
-	 * @since  1.0.0
+	 * @since  0.2.0
 	 */
 	public function display_tools_page() {
 			include_once 'partials/fake-real-text-admin-display.php';
@@ -112,7 +112,7 @@ class Fake_Real_Text_Admin {
 	/**
 	 * Generate a fake post
 	 *
-	 * @since  1.0.0
+	 * @since  0.2.0
 	 */
 	protected function generate_fake_post( $options ) {
 
@@ -168,7 +168,7 @@ class Fake_Real_Text_Admin {
 	/**
 	 * Register the stylesheets for the admin area.
 	 *
-	 * @since    1.0.0
+	 * @since    0.2.0
 	 */
 	public function enqueue_styles() {
 
@@ -191,7 +191,7 @@ class Fake_Real_Text_Admin {
 	/**
 	 * Register the JavaScript for the admin area.
 	 *
-	 * @since    1.0.0
+	 * @since    0.2.0
 	 */
 	public function enqueue_scripts() {
 
