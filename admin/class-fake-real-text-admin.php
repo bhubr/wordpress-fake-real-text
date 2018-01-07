@@ -98,7 +98,7 @@ class Fake_Real_Text_Admin {
 		] );
 
 		// Handle error
-		if( $post === 0 || ! is_int( $post_id ) ) {
+		if( $post_id === 0 || ! is_int( $post_id ) ) {
 			header("HTTP/1.1 400 Bad Request" );
 			return json_encode( [
 				'error' => 'Post could not be created'
@@ -197,8 +197,9 @@ class Fake_Real_Text_Admin {
 		 * class.
 		 */
 
-		$with_timestamp = WP_DEBUG ? '?ts=' . time() : ''; 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/fake-real-text-admin.js' . $with_timestamp, array( 'jquery' ), $this->version, false );
+		$with_timestamp = WP_DEBUG ? '?ts=' . time() : '';
+		wp_enqueue_script( 'async', plugin_dir_url( __FILE__ ) . 'js/async.min.js', array( 'jquery' ), "2.6.0", false );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/fake-real-text-admin.js' . $with_timestamp, array( 'jquery', 'async' ), $this->version, false );
 
 	}
 
