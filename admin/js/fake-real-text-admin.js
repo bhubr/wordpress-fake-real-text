@@ -46,8 +46,12 @@
         var statsContainer = $('#' + task.statsId);
         var statsList = statsContainer.find('ul');
         var statsProgress = statsContainer.find('.progress-wrap');
-        console.log(statsProgress);
-        statsList.empty();
+        statsProgress
+        .removeClass('done')
+        .addClass('pending')
+        .find('.progress-bar')
+        .css('left', 0);
+        // statsList.empty();
 
         var numDone = 0;
 
@@ -63,7 +67,9 @@
         q.drain = function() {
             moveProgressBar(statsProgress, numTotal, numTotal);
             setTimeout(function() {
-                statsProgress.css('background', '#00aa64');
+                statsProgress
+                .removeClass('pending')
+                .addClass('done');
             }, animationLength);
             done();
         };

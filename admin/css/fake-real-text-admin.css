@@ -75,11 +75,15 @@
   width: 100%;
 }
 .progress-wrap {
-  background: #0085ba;
   margin: 20px 0;
   overflow: hidden;
   position: relative;
-
+}
+.progress-wrap.pending {
+  background: #0085ba;
+}
+.progress-wrap.done {
+  background: #00aa64;
 }
 .progress-bar {
   background: #ddd;
