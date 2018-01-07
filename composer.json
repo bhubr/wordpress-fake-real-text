@@ -1,0 +1,14 @@
+{
+    "name": "bhu/fake-real-text",
+    "description": "Create fake WordPress content using REAL text generator (not lorem ipsum)",
+    "type": "wordpress-plugin",
+    "require": {
+        "fzaninotto/faker": "^1.7"
+    },
+    "authors": [
+        {
+            "name": "Benoît Hubert",
+            "email": "benoithubert@gmail.com"
+        }
+    ]
+}

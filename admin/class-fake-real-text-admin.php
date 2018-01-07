@@ -81,6 +81,47 @@ class Fake_Real_Text_Admin {
 	}
 
 	/**
+	 * Generate a fake post
+	 *
+	 * @since  1.0.0
+	 */
+	public function generate_fake_post( $post_type = 'post', $locale = '' ) {
+
+		// Set a default locale if none provided
+		if( empty( $locale ) ) {
+			$locale = get_locale();
+		}
+
+		// Check that provided post type is valid
+		$wp_types = get_post_types();
+		if( ! array_key_exists( $post_type, $wp_types ) ) {
+			throw new Exception( "Invalid post type $post_type" );
+		}
+
+		// Initialize faker with locale
+		$faker = Faker\Factory::create( $locale );
+
+		// Get WordPress registered users
+		$users = get_users();
+		$user_index = rand(0, count( $users ) - 1);
+
+		// Generate fake post data
+		$fake_post_data = [
+			'post_author'  => $users[ $user_index ]->ID,
+			'post_title'   => $faker->realText($faker->numberBetween(20, 40)),
+			'post_content' => $faker->realText($faker->numberBetween(300, 1000)),
+			'post_status'  => 'publish',
+			'post_type'    => $post_type,
+			'post_date'    => $faker->dateTimeInInterval('-1 year', '+1 year')->format('Y-m-d')
+		];
+
+		// var_dump($fake_post_data);
+		return wp_insert_post( $fake_post_data );
+		// var_dump($faker->dateTimeInInterval('-1 month', '+10 days'));
+
+	}
+
+	/**
 	 * Register the stylesheets for the admin area.
 	 *
 	 * @since    1.0.0
