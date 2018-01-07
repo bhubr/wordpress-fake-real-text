@@ -1,32 +1,33 @@
+// https://stackoverflow.com/questions/1184624/convert-form-data-to-javascript-object-with-jquery#answer-1186309
+function objectifyForm(formArray) {//serialize data function
+
+  var returnArray = {};
+  for (var i = 0; i < formArray.length; i++){
+    returnArray[formArray[i]['name']] = formArray[i]['value'];
+  }
+  return returnArray;
+}
+
 (function( $ ) {
 	'use strict';
 
-	/**
-	 * All of the code for your admin-facing JavaScript source
-	 * should reside in this file.
-	 *
-	 * Note: It has been assumed you will write jQuery code here, so the
-	 * $ function reference has been prepared for usage within the scope
-	 * of this function.
-	 *
-	 * This enables you to define handlers, for when the DOM is ready:
-	 *
-	 * $(function() {
-	 *
-	 * });
-	 *
-	 * When the window is loaded:
-	 *
-	 * $( window ).load(function() {
-	 *
-	 * });
-	 *
-	 * ...and/or other possibilities.
-	 *
-	 * Ideally, it is not considered best practise to attach more than a
-	 * single DOM-ready or window-load handler for a particular page.
-	 * Although scripts in the WordPress core, Plugins and Themes may be
-	 * practising this, we should strive to set a better example in our own work.
-	 */
+	$(document).ready(function() {
+		console.log($('#generate-posts'));
+
+		$('#generate-posts').submit(function(e) {
+			e.preventDefault();
+			var formData = $(this).serializeArray();
+			console.log(formData, objectifyForm(formData));
+
+			var data = Object.assign(objectifyForm(formData), {
+				action: 'frt_generate_posts'
+			});
+
+			// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
+			$.post(ajaxurl, data, function(response) {
+				console.log('params were', response);
+			});
+		});
+	});
 
 })( jQuery );

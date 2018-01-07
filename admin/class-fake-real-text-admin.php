@@ -81,44 +81,78 @@ class Fake_Real_Text_Admin {
 	}
 
 	/**
+	 * Generate a post (called via AJAX request)
+	 */
+	public function generate_posts() {
+
+		// Must be admin
+		if( ! current_user_can('manage_options') ) {
+			header("HTTP/1.1 403 Forbidden" );
+			exit;
+		}
+
+		// Call generator function with right options
+		$post_id = $this->generate_fake_post( [
+			'time_interval' => $_POST['time_interval'],
+			'post_type'     => $_POST['post_type']
+		] );
+
+		// Handle error
+		if( $post === 0 || ! is_int( $post_id ) ) {
+			header("HTTP/1.1 400 Bad Request" );
+			return json_encode( [
+				'error' => 'Post could not be created'
+			] );
+		}
+
+		// Get generated post from db and send it
+		$post = get_post( $post_id );
+		echo json_encode( $post );
+		exit;
+	}
+
+	/**
 	 * Generate a fake post
 	 *
 	 * @since  1.0.0
 	 */
-	public function generate_fake_post( $post_type = 'post', $locale = '' ) {
+	public function generate_fake_post( $options ) {
 
-		// Set a default locale if none provided
-		if( empty( $locale ) ) {
-			$locale = get_locale();
-		}
+		// Set default options
+		$default_options = [
+			'post_type'     => 'post',
+			'locale'        => get_locale(),
+			'time_interval' => '1 month'
+		];
+		$options = array_merge( $default_options, $options );
 
 		// Check that provided post type is valid
+		// This shouldn't happen unless a request is forged
 		$wp_types = get_post_types();
-		if( ! array_key_exists( $post_type, $wp_types ) ) {
+		if( ! array_key_exists( $options['post_type'], $wp_types ) ) {
 			throw new Exception( "Invalid post type $post_type" );
 		}
 
 		// Initialize faker with locale
-		$faker = Faker\Factory::create( $locale );
+		$faker = Faker\Factory::create( $options['locale'] );
 
 		// Get WordPress registered users
 		$users = get_users();
 		$user_index = rand(0, count( $users ) - 1);
 
 		// Generate fake post data
+		$intv_start = '-' . $options['time_interval'];
+		$intv_duration = '+' . $options['time_interval'];
 		$fake_post_data = [
 			'post_author'  => $users[ $user_index ]->ID,
-			'post_title'   => $faker->realText($faker->numberBetween(20, 40)),
+			'post_title'   => $faker->realText($faker->numberBetween(30, 50)),
 			'post_content' => $faker->realText($faker->numberBetween(300, 1000)),
 			'post_status'  => 'publish',
-			'post_type'    => $post_type,
-			'post_date'    => $faker->dateTimeInInterval('-1 year', '+1 year')->format('Y-m-d')
+			'post_type'    => $options['post_type'],
+			'post_date'    => $faker->dateTimeInInterval($intv_start, $intv_duration)->format('Y-m-d')
 		];
 
-		// var_dump($fake_post_data);
 		return wp_insert_post( $fake_post_data );
-		// var_dump($faker->dateTimeInInterval('-1 month', '+10 days'));
-
 	}
 
 	/**
@@ -163,7 +197,8 @@ class Fake_Real_Text_Admin {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/fake-real-text-admin.js', array( 'jquery' ), $this->version, false );
+		$with_timestamp = WP_DEBUG ? '?ts=' . time() : ''; 
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/fake-real-text-admin.js' . $with_timestamp, array( 'jquery' ), $this->version, false );
 
 	}
 
