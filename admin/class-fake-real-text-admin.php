@@ -54,6 +54,32 @@ class Fake_Real_Text_Admin {
 
 	}
 
+		/**
+		 * Add an options page under the Settings submenu
+		 *
+		 * @since  1.0.0
+		 */
+		public function add_tools_page() {
+
+			$this->plugin_screen_hook_suffix = add_management_page(
+				__( 'Fake Real Text', 'fake-real-text' ),
+				__( 'Fake Real Text', 'fake-real-text' ),
+				'manage_options',
+				$this->plugin_name,
+				array( $this, 'display_tools_page' )
+			);
+
+	}
+
+	/**
+	 * Render the options page for plugin
+	 *
+	 * @since  1.0.0
+	 */
+	public function display_tools_page() {
+			include_once 'partials/fake-real-text-admin-display.php';
+	}
+
 	/**
 	 * Register the stylesheets for the admin area.
 	 *

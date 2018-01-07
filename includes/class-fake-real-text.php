@@ -78,7 +78,6 @@ class Fake_Real_Text {
 		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
-
 	}
 
 	/**
@@ -154,6 +153,7 @@ class Fake_Real_Text {
 
 		$plugin_admin = new Fake_Real_Text_Admin( $this->get_plugin_name(), $this->get_version() );
 
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_tools_page' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
