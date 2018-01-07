@@ -8,8 +8,8 @@
 				<th scope="row"><label for="num_posts"><?php echo __('Number of posts to generate', 'fake-real-text'); ?></label></th>
 				<td>
 					<select id="num_posts" name="num_posts">
-						<option value="1">1</option>
-						<option value="5" selected>5</option>
+						<option value="1" selected>1</option>
+						<option value="5">5</option>
 						<option value="10">10</option>
 						<option value="50">50</option>
 						<option value="100">100</option>

@@ -57,6 +57,7 @@
 
         // create a queue object with concurrency 2
         var q = async.queue(function(task, callback) {
+            task.data._frt_generate = 1;
             $.post(ajaxurl, task.data, function(data) {
                 console.log('received', data);
                 callback(null, data);
@@ -76,10 +77,12 @@
 
         for(var i = 0 ; i < numTotal ; i++) {
             // add some items to the queue
-            q.push(task, function(err, response) {
+            q.push(task, function(err, entries) {
                 numDone++;
                 moveProgressBar(statsProgress, numDone, numTotal);
-                statsList.append('<li>' + numDone + '/' + numTotal + ' (ID: ' + response.ID + ') ' + response.post_title + '</li>');
+                entries.forEach(function(entry) {
+                    statsList.append('<li>' + numDone + '/' + numTotal + ' (ID: ' + entry.post.ID + ') ' + entry.post.post_title + '(lang:' + entry.lang + ')</li>');
+                });
             });
         }
     }
@@ -91,9 +94,7 @@
             var formData = $(this).serializeArray();
             console.log(formData, objectifyForm(formData));
 
-            var data = Object.assign(objectifyForm(formData), {
-                action: 'frt_generate_posts'
-            });
+            var data = objectifyForm(formData);
             var numPosts = data.num_posts;
             delete data.num_posts;
 
