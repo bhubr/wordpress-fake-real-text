@@ -26,7 +26,7 @@ $post_types_options = array_map( function( $type ) {
 	<div class="col span_1_of_2">
 		<?php require 'fake-real-text-admin-form-posts.php'; ?>
 	</div>
-	<div class="col span_1_of_2" id="posts-stats">
+	<div class="col span_1_of_2 stats" id="posts-stats">
 		<ul></ul>
 		<!-- Change the below data attribute to play -->
 		<div class="progress-wrap progress">

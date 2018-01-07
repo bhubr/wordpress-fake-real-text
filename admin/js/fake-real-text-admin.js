@@ -29,7 +29,7 @@
         // var getPercent = (target.data('progress-percent') / 100);
         var getProgressWrapWidth = target.width();
         var progressTotal = getPercent * getProgressWrapWidth;
-        var animationLength = 2500;
+        var animationLength = 250;
 
         // console.log("moveProgressBar", numDone, numTotal, getPercent, getProgressWrapWidth, progressTotal);
 
@@ -71,7 +71,7 @@
                 // console.log('finished processing ' + response.post_title);
                 numDone++;
                 moveProgressBar(statsProgress, numDone, numTotal);
-                statsList.append('<li>' + response.ID + '. ' + response.post_title + '</li>');
+                statsList.append('<li>' + numDone + '/' + numTotal + ' (ID: ' + response.ID + ') ' + response.post_title + '</li>');
             });
         }
     }

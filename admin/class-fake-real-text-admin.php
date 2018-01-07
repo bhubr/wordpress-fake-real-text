@@ -92,31 +92,29 @@ class Fake_Real_Text_Admin {
 		}
 
 		// Call generator function with right options
-		$post_id = $this->generate_fake_post( [
+		$post = $this->generate_fake_post( [
 			'time_interval' => $_POST['time_interval'],
 			'post_type'     => $_POST['post_type']
 		] );
 
-		// Handle error
-		if( $post_id === 0 || ! is_int( $post_id ) ) {
+		if( ! $post ) {
 			header("HTTP/1.1 400 Bad Request" );
 			return json_encode( [
 				'error' => 'Post could not be created'
 			] );
 		}
 
-		// Get generated post from db and send it
-		$post = get_post( $post_id );
 		echo json_encode( $post );
 		exit;
 	}
+
 
 	/**
 	 * Generate a fake post
 	 *
 	 * @since  1.0.0
 	 */
-	public function generate_fake_post( $options ) {
+	protected function generate_fake_post( $options ) {
 
 		// Set default options
 		$default_options = [
@@ -152,7 +150,19 @@ class Fake_Real_Text_Admin {
 			'post_date'    => $faker->dateTimeInInterval($intv_start, $intv_duration)->format('Y-m-d')
 		];
 
-		return wp_insert_post( $fake_post_data );
+		$post_id = wp_insert_post( $fake_post_data );
+
+		// Handle error
+		if( $post_id === 0 || ! is_int( $post_id ) ) {
+			return false;
+		}
+
+		// Add a meta data to indicate this is a fake post
+		add_post_meta($post_id, '_frt_fake', 1, true);
+
+		// Get generated post from db and send it
+		$post = get_post( $post_id );
+		return $post;
 	}
 
 	/**
