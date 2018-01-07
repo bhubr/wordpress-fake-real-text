@@ -17,7 +17,13 @@ $post_types_options = array_map( function( $type ) {
 	$selected = $type === 'post' ? ' selected' : '';
 	return "<option value=\"$type\" $selected>$type</option>";
 }, $wp_post_types );
+
+if( $this->has_wpml ):
 ?>
+<div class="notice notice-info">
+	<p><?php echo __('WPML extension is installed and active'); ?></p>
+</div>
+<?php endif; ?>
 
 <h3><?php echo __('Generate fake posts', 'fake-real-text'); ?></h3>
 

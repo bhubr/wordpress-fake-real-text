@@ -44,31 +44,30 @@ class Fake_Real_Text_Admin {
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    0.2.0
-	 * @param      string    $plugin_name       The name of this plugin.
-	 * @param      string    $version    The version of this plugin.
+	 * @param    string    $plugin_name The name of this plugin.
+	 * @param    string    $version     The version of this plugin.
 	 */
 	public function __construct( $plugin_name, $version ) {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
-
+		$this->has_wpml = function_exists('icl_object_id');
 	}
 
-		/**
-		 * Add an options page under the Settings submenu
-		 *
-		 * @since  0.2.0
-		 */
-		public function add_tools_page() {
+	/**
+	 * Add an options page under the Settings submenu
+	 *
+	 * @since  0.2.0
+	 */
+	public function add_tools_page() {
 
-			$this->plugin_screen_hook_suffix = add_management_page(
-				__( 'Fake Real Text', 'fake-real-text' ),
-				__( 'Fake Real Text', 'fake-real-text' ),
-				'manage_options',
-				$this->plugin_name,
-				array( $this, 'display_tools_page' )
-			);
-
+		$this->plugin_screen_hook_suffix = add_management_page(
+			__( 'Fake Real Text', 'fake-real-text' ),
+			__( 'Fake Real Text', 'fake-real-text' ),
+			'manage_options',
+			$this->plugin_name,
+			array( $this, 'display_tools_page' )
+		);
 	}
 
 	/**
@@ -82,6 +81,7 @@ class Fake_Real_Text_Admin {
 
 	/**
 	 * Generate a post (called via AJAX request)
+	 * @since  0.2.0
 	 */
 	public function generate_posts() {
 
@@ -92,7 +92,7 @@ class Fake_Real_Text_Admin {
 		}
 
 		// Call generator function with right options
-		$post = $this->generate_fake_post( [
+		$post = $this->generate_fake_posts( [
 			'time_interval' => $_POST['time_interval'],
 			'post_type'     => $_POST['post_type']
 		] );
@@ -108,6 +108,191 @@ class Fake_Real_Text_Admin {
 		exit;
 	}
 
+
+	/**
+	 * Call the relevant function according to WPML being enabled or not
+	 *
+	 * @since    0.3.0
+	 * @access   protected
+	 * @var      array    $options    Options for fake data and post generation.
+	 */
+	protected function generate_fake_posts( $options ) {
+
+		return $this->has_wpml ?
+			$this->generate_multilingual( $options ) :
+			$this->generate_monolingual( $options );
+
+	}
+
+	/**
+	 * Generate fake posts for only language
+	 *
+	 * @since    0.3.0
+	 * @access   protected
+	 * @var      array    $options    Options for fake data and post generation.
+	 */
+	protected function generate_monolingual( $options ) {
+		$post = $this->generate_fake_post( $options );
+		if( ! $post ) {
+			return false;
+		}
+		return [
+			[
+				'post' => $post,
+				'lang' => substr( get_locale(), 0, 2 )
+			]
+		];
+	}
+
+	/**
+	 * Get active language from list
+	 *
+	 * @since    0.3.0
+	 * @access   protected
+	 * @var      array    $all_languages    WPML languages
+	 */
+	public function get_active_language( $all_languages ) {
+		$active_languages = array_filter( $all_languages, function( $v, $k ) {
+			return $v['active'];
+		}, ARRAY_FILTER_USE_BOTH );
+		$keys = array_keys( $active_languages );
+
+		return $active_languages[ $keys[0] ];
+	}
+
+	/**
+	 * Prepare an array to store multilingual generation results
+	 *
+	 * @since    0.3.0
+	 */
+	protected function setup_multi_results() {
+		$this->generated_posts = [];
+	}
+
+	/**
+	 * Add an entry to array
+	 *
+	 * @since    0.3.0
+	 */
+	protected function add_multi_results( $post, $lang ) {
+		$this->generated_posts[] = [
+			'post'   => $post,
+			'lang'   => $lang
+		];
+	}
+
+	/**
+	 * Generate fake posts for all languages
+	 *
+	 * @since    0.3.0
+	 * @access   protected
+	 * @var      array    $options    Options for fake data and post generation.
+	 */
+	protected function generate_multilingual( $options ) {
+
+		// Get all languages AND active language
+		$languages = icl_get_languages();
+		$active_lang = $this->get_active_language( $languages );
+		$active_code = $active_lang['code'];
+
+		// Setup empty result array;
+		$this->setup_multi_results();
+
+		// FIRST create a post for active language. This must be so in order to get a trid
+		// (translation group id)
+		list( $post, $trid ) = $this->generate_for_lang( $options, $active_lang, $active_code );
+		if( ! $post ) {
+			return false;
+		}
+
+		// Add it to results array
+		$this->add_multi_results( $post, $active_code );
+
+		// Iterate other languages
+		foreach ( $languages as $code => $lang ) {
+
+			// Skip the active lang
+			if( $code === $active_code ) {
+				continue;
+			}
+
+			// Generate for this lang, providing active lang code and trans. group id
+			list( $post, $trid ) = $this->generate_for_lang( $options, $lang, $active_code, $trid );
+			if( ! $post ) {
+				return false;
+			}
+
+			$this->add_multi_results( $post, $lang['code'] );
+		}
+
+		return $this->generated_posts;
+
+	}
+
+	/**
+	 * Generate for specified language
+	 *
+	 * @since    0.3.0
+	 * @access   protected
+	 * @var      array    $options     Options for fake data and post generation.
+	 * @var      array    $lang        WPML language descriptor (code, active, flag...)
+	 * @var      string   $active_code Active language's code (fr, en...)
+	 * @var      string   $trid        WPML translation group id
+	 */
+	protected function generate_for_lang( $options, $lang, $active_code, $trid = 0 ) {
+
+		// Add locale to options for post generation
+		$locale = $lang['default_locale'];
+		$options['locale'] = $locale;
+
+		// Generate post
+		$post = $this->generate_fake_post( $options );
+		if( ! $post ) {
+			return [false, false];
+		}
+
+		// Get icl_translations entry
+		$icl_tr_entry = $this->get_icl_translations_entry( $post->ID );
+
+		// If this is the active language, return immediately with trid
+		if( $lang['code'] === $active_code ) {
+			return [ $post, $icl_tr_entry->trid ];
+		}
+
+		// Otherwise we must update the translation entry, to bind this post to the original
+		$updated = $this->update_icl_translation_entry( $icl_tr_entry->translation_id, $trid, $active_code, $lang['code'] );
+		return [ $post, $trid ];
+	}
+
+	/**
+	 * Get the wp_icl_translations entry created by WPML for a post
+	 *
+	 * @since    0.3.0
+	 * @access   protected
+	 * @var      int    $post_id    ID of post for which to retrieve translation entry
+	 */
+	protected function get_icl_translations_entry( $post_id ) {
+		global $wpdb;
+		$entries = $wpdb->get_results( "SELECT * from {$wpdb->prefix}icl_translations WHERE element_id = $post_id", OBJECT );
+		return $entries[0];
+	}
+
+	/**
+	 * Update the wp_icl_translations entry for a post
+	 *
+	 * @since    0.3.0
+	 * @access   protected
+	 * @var      array    $options    Options for fake data and post generation.
+	 */
+	protected function update_icl_translation_entry( $translation_id, $trid, $source_code, $code ) {
+		global $wpdb;
+		$data = [
+			'trid' => $trid,
+			'source_language_code' => $source_code,
+			'language_code' => $code
+		];
+		return $wpdb->update( "{$wpdb->prefix}icl_translations", $data, [ 'translation_id' => $translation_id ] );
+	}
 
 	/**
 	 * Generate a fake post

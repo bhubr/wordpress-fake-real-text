@@ -76,10 +76,12 @@
 
         for(var i = 0 ; i < numTotal ; i++) {
             // add some items to the queue
-            q.push(task, function(err, response) {
+            q.push(task, function(err, entries) {
                 numDone++;
                 moveProgressBar(statsProgress, numDone, numTotal);
-                statsList.append('<li>' + numDone + '/' + numTotal + ' (ID: ' + response.ID + ') ' + response.post_title + '</li>');
+                entries.forEach(function(entry) {
+                    statsList.append('<li>' + numDone + '/' + numTotal + ' (ID: ' + entry.post.ID + ') ' + entry.post.post_title + '(lang:' + entry.lang + ')</li>');
+                });
             });
         }
     }
