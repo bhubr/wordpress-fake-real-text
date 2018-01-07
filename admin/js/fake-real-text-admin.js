@@ -1,6 +1,8 @@
 (function( $ ) {
     'use strict';
 
+    var animationLength = 250;
+
     /**
      * Transform output from jQuery.serializeArray into a key-value map
      * https://stackoverflow.com/questions/1184624/convert-form-data-to-javascript-object-with-jquery#answer-1186309
@@ -29,7 +31,6 @@
         // var getPercent = (target.data('progress-percent') / 100);
         var getProgressWrapWidth = target.width();
         var progressTotal = getPercent * getProgressWrapWidth;
-        var animationLength = 250;
 
         // console.log("moveProgressBar", numDone, numTotal, getPercent, getProgressWrapWidth, progressTotal);
 
@@ -60,15 +61,16 @@
 
         // assign a callback
         q.drain = function() {
-            // console.log('all items have been processed');
             moveProgressBar(statsProgress, numTotal, numTotal);
+            setTimeout(function() {
+                statsProgress.css('background', '#00aa64');
+            }, animationLength);
             done();
         };
 
         for(var i = 0 ; i < numTotal ; i++) {
             // add some items to the queue
             q.push(task, function(err, response) {
-                // console.log('finished processing ' + response.post_title);
                 numDone++;
                 moveProgressBar(statsProgress, numDone, numTotal);
                 statsList.append('<li>' + numDone + '/' + numTotal + ' (ID: ' + response.ID + ') ' + response.post_title + '</li>');
@@ -77,7 +79,6 @@
     }
 
     $(document).ready(function() {
-        console.log($('#generate-posts'));
 
         $('#generate-posts').submit(function(e) {
             e.preventDefault();
@@ -92,9 +93,6 @@
 
             var task = {
                 data: data,
-                // success: function(response) {
-                //     console.log('params were', response);
-                // },
                 statsId: 'posts-stats'
             };
 
